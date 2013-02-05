@@ -231,11 +231,6 @@ typedef enum {
     MOD_LAYER_LAST
 } modbits;
 
-/// @todo : cleanup modifiers everywhere
-#define NONE  0
-#define CTRL  (1<<0)
-#define SHIFT (1<<1)
-#define ALTGR (1<<6)
 
 typedef enum
 {
