@@ -45,9 +45,9 @@
 // #define TRACE false || printf
 #define TRACE(...)
 
-uint8_t lastKeyCode;
-uint8_t rowData[ROWS];
-uint8_t prevRowData[ROWS];
+uint16_t lastKeyCode;
+uint16_t rowData[ROWS];
+uint16_t prevRowData[ROWS];
 
 /**
  * SecondUseToggle is a simple state machine that enables keys to:
@@ -58,8 +58,6 @@ uint8_t prevRowData[ROWS];
  * This enables keys in good locations (e.g. thumb buttons) to be used either as frequent keys
  * such as space, return or backspace to also act as layer or control modifiers, thus minimizing
  * finger travel across the board.
- *
- * @todo : several MKTs together do not work unless they all act as modifiers
  *
  */
 typedef enum {
@@ -85,12 +83,12 @@ uint32_t    repeatGesture_timer;
 
 
 /// debounce variables
-volatile uint8_t kb_state[ROWS];    // debounced and inverted key state: bit = 1: key pressed
-volatile uint8_t kb_press[ROWS];    // key press detect
-volatile uint8_t kb_release[ROWS];  // key release detect
-volatile uint8_t kb_rpt[ROWS];      // key long press and repeat
+volatile uint16_t kb_state[ROWS];    // debounced and inverted key state: bit = 1: key pressed
+volatile uint16_t kb_press[ROWS];    // key press detect
+volatile uint16_t kb_release[ROWS];  // key release detect
+volatile uint16_t kb_rpt[ROWS];      // key long press and repeat
 
-static uint8_t ct0[ROWS], ct1[ROWS];
+static uint16_t ct0[ROWS], ct1[ROWS];
 static int32_t rpt[ROWS];
 
 #define ALL_COLS_MASK ((1<<COLS)-1)  // 0x63 or all lower 6 bits
@@ -592,12 +590,15 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
     }
 
     uint8_t idx=0;
-
+    // Alle normalen Tasten einsetzen: Codepage 7
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k=activeKeys.keys[i];
         if(k.normalKey && idx < 6) {
-            report_data->KeyCode[idx]=getKeyCode(k.row, k.col, getActiveLayer());
-            idx++;
+            uint16_t code=getKeyCode(k.row, k.col, getActiveLayer());
+            if (USAGE_PAGE(code) == page_keyboard) {
+                report_data->KeyCode[idx]= USAGE_ID(code);
+                idx++;
+            }
         }
         if(idx>6) {
             printf("\nError: more than 6 keys! ");
@@ -607,14 +608,14 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         }
     }
 
+    // Modifier einsetzen
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
-
     return sizeof(USB_KeyboardReport_Data_t);
 }
 
 
 
-uint8_t get_kb_release( uint8_t key_mask, uint8_t col)
+uint16_t get_kb_release( uint16_t key_mask, uint16_t col)
 {
     ATOMIC_BLOCK(ATOMIC_FORCEON) {
         key_mask &= kb_release[col];                      // read key(s)
@@ -623,7 +624,7 @@ uint8_t get_kb_release( uint8_t key_mask, uint8_t col)
     return key_mask;
 }
 
-uint8_t get_kb_press( uint8_t key_mask, uint8_t col )
+uint16_t get_kb_press( uint16_t key_mask, uint16_t col )
 {
     ATOMIC_BLOCK(ATOMIC_FORCEON) {
         key_mask &= kb_press[col];                      // read key(s)
@@ -631,7 +632,7 @@ uint8_t get_kb_press( uint8_t key_mask, uint8_t col )
     }
     return key_mask;
 }
-uint8_t get_kb_rpt( uint8_t key_mask, uint8_t col )
+uint16_t get_kb_rpt( uint16_t key_mask, uint16_t col )
 {
     ATOMIC_BLOCK(ATOMIC_FORCEON) {
         key_mask &= kb_rpt[col];                        // read key(s)
@@ -649,7 +650,7 @@ uint8_t get_kb_rpt( uint8_t key_mask, uint8_t col )
 void scan_matrix(void)
 {
     TRACE("\ns_m ");
-    uint8_t i, data;
+    uint16_t i, data;
 
     for (uint8_t row = 0; row < ROWS; ++row) {
         activate(row);
@@ -680,7 +681,7 @@ void scan_matrix(void)
         }
 
         // Now evaluate results
-        uint8_t p,r,h;
+        uint16_t p,r,h;
         p=get_kb_press  (ALL_COLS_MASK, row);
         h=get_kb_rpt    (ALL_COLS_MASK, row);
         r=get_kb_release(ALL_COLS_MASK, row);
@@ -689,8 +690,16 @@ void scan_matrix(void)
     }
 }
 
+
 void printCurrentKeys(void)
 {
+
+    for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
+        struct Key k=activeKeys.keys[i];
+        printf("Spalte: %u ; Reihe: %u gedrueckt\n",k.col,k.row);
+    }
+
+/*
     for(uint8_t r=0; r<ROWS/2; ++r) {
         printf("\n");
         for(uint8_t c=0; c< COLS; ++c) {
@@ -708,6 +717,7 @@ void printCurrentKeys(void)
         }
     }
     printf("\n");
+*/
 }
 
 
@@ -797,7 +807,8 @@ bool isNormalKey(uint8_t row, uint8_t col)
 
 uint8_t getMouseKey(uint8_t row, uint8_t col)
 {
-    uint16_t hid = SecondaryUsage[row][col];
+    uint8_t currentLayoutNr = eeprom_read_byte (&alternateLayoutNr);
+    uint16_t hid = secondaryModifierUsageMatrix[currentLayoutNr][row][col];
     if ( hid >= MS_BTN_1 && hid <= MS_SCROLL )
         return (1<<(hid-MS_BTN_1));
     return 0;
@@ -845,7 +856,6 @@ void init_active_keys()
         setCommandMode(true);
         return;
     }
-
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {

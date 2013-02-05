@@ -20,6 +20,7 @@
 #include "hid_usage.h"
 #include "keyboard_class.h"
 #include "keymap.h"
+#include "macro.h"
 #include "jump_bootloader.h"
 #include "trackpoint.h"
 
@@ -39,7 +40,7 @@ static uint8_t subcmd;           ///< currently active subcommand
 
 #define MAXLEN 20
 static uint8_t idx =0;
-static uint8_t str[MAXLEN];
+static uint16_t str[MAXLEN];
 
 void setCommandMode(bool on) {
     printf("\nCMD %s ", on ? "active [qtp] " : "off" );
@@ -69,7 +70,7 @@ void handleCommand(void) {
         return;
 
     struct Key k=activeKeys.keys[0];
-    uint8_t hid = getKeyCode(k.row, k.col, 0);
+    uint16_t hid = getKeyCode(k.row, k.col, 0);
 
     if(subcmd) {
         handleSubCmd(k);
@@ -139,7 +140,6 @@ void handleCommand(void) {
             printf("\nAlternate layer %s", g_alternateLayer ? "selected." : "off.");
             setCommandMode(false);
             /*
-            // Layout umschalten
             printf("\nSwitch layout::");
             subcmd=SUB_LAYOUT;
             */
@@ -173,7 +173,8 @@ void handleCommand(void) {
 }
 
 void handleSubCmd(struct Key k) {
-    uint8_t h =getKeyCode(k.row, k.col, getActiveLayer());
+    uint16_t h =getKeyCode(k.row, k.col, getActiveLayer());
+
     switch( subcmd )
     {
         case SUB_READ:
@@ -185,7 +186,7 @@ void handleSubCmd(struct Key k) {
                     idx=0;
                     setCommandMode(false);
                 }
-                str[idx++]=h;
+                str[idx++]=USAGE_ID(h);
                 printf("\n%2d %d: ",idx,h);
                 for(uint8_t i=0; i<idx; ++i)
                     printf("%02x", str[i]);
