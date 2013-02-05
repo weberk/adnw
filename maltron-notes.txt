@@ -19,5 +19,7 @@ maltron a27d1c7
 
 
 CONFIGURABLE:
-  pins
+  pins for matrix
+  keys for commandmode
+  subcommand selection
   ManufacturerString / ProductString..
