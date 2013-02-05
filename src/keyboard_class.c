@@ -839,16 +839,9 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
   */
 void init_active_keys()
 {
-    if( rowData[3] & (1<<0) ) {
-        rowData[3] &= ~(1<<0);
-        setMacroMode(true);
-        return;
-    }
-    // all four corners pressed: switch to command mode
-    else if(// (rowData[0] & (1<<0)) &&
-        (rowData[2] & (1<<0)) &&
-        // (rowData[4] & (1<<5)) &&
-        (rowData[6] & (1<<5)) ) {
+    // FN Knopf und MENU gleichzeitig gedrŸckt: switch to command mode
+    if( (rowData[6] & (1<<4)) && // angenommen hier liegt MENU
+            (rowData[6] & (1<<3)) ) {// angenommen hier liegt FN
         setCommandMode(true);
         return;
     }

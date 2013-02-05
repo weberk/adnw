@@ -75,6 +75,17 @@ void handleCommand(void) {
         handleSubCmd(k);
         return;
     }
+    // Power-Taste-gedrŸckt? ==> Start Bootloader
+    code = (k.row == 7 && k.col == 1) ? HID_B : code;
+    // Mute-Taste-gedrŸckt? ==> Start Makromodus
+    code = (k.row == 7 && k.col == 2) ? HID_M : code;
+    // F1-Taste gedrŸckt? ==> Switch Layout
+    code = (k.row == 0 && k.col == 0) ? HID_L : code;
+    // F2-Taste-gedrŸckt? ==> Switch GeoArea
+    code = (k.row == 0 && k.col == 1) ? HID_G : code;
+    // F3-Taste-gedrŸckt? ==> Switch Mac/PC
+    code = (k.row == 0 && k.col == 2) ? HID_H : code;
+
     clearActiveKeys();
     clearRowData();
 
