@@ -22,8 +22,8 @@ SRCDIR       = ./src
 # -----------------------------------------------------------
 # Keyboard selection below: HYPERNANO, BLUECUBE or MALTRON_KW
 # -----------------------------------------------------------
-KB_HW		 = HYPERNANO
-#KB_HW		 = MALTRON_KW
+#KB_HW		 = HYPERNANO
+KB_HW		 = MALTRON_KW
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC =   $(LUFA_SRC_USB)          \
