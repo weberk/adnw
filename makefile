@@ -8,9 +8,6 @@
 # --------------------------------------
 #         LUFA Project Makefile.
 # --------------------------------------
-
-MCU          = atmega32u4
-#MCU          = at90usb1286 
 ARCH         = AVR8
 BOARD        = TEENSY2
 F_CPU        = 16000000
@@ -19,11 +16,6 @@ OPTIMIZATION = s
 TARGET       = adnw
 SRCDIR       = ./src
 
-# -----------------------------------------------------------
-# Keyboard selection below: HYPERNANO, BLUECUBE or MALTRON_KW
-# -----------------------------------------------------------
-#KB_HW		 = HYPERNANO
-KB_HW		 = MALTRON_KW
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC =   $(LUFA_SRC_USB)          \
@@ -39,13 +31,16 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/mousekey.c         \
 	$(SRCDIR)/jump_bootloader.c  \
 
-
-
 LUFA_PATH    = LUFA/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 CC_FLAGS    += -DDEBUG_OUTPUT
 CC_FLAGS	+= -DKB_HW=$(KB_HW) -D$(KB_HW)
 LD_FLAGS     =
+
+# -----------------------------------------------------------
+# Keyboard selection below: HYPERNANO, BLUECUBE or MALTRON_KW
+# -----------------------------------------------------------
+KB_HW		 = MALTRON_KW
 
 ##################################################################
 #
@@ -55,8 +50,10 @@ LD_FLAGS     =
 
 ifneq (,$(findstring MALTRON_KW,$(CC_FLAGS)))
 CC_FLAGS    += # -DMACOS -DQWERTY
+MCU          = at90usb1286 
 else
 CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
+MCU          = atmega32u4
 endif
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
