@@ -161,7 +161,7 @@ typedef enum {
 #define HID_R_ALT           MAKE_USAGE(page_keyboard, 0xE6)
 #define HID_R_GUI           MAKE_USAGE(page_keyboard, 0xE7)
 
-#define HID_SYSRQ           MAKE_USAGE(page_keyboard, 0x9A
+#define HID_SYSRQ           MAKE_USAGE(page_keyboard, 0x9A)
 
 // Consumer Page(0x0C)
 // following are supported by Windows: http://msdn.microsoft.com/en-us/windows/hardware/gg463372.aspx
@@ -254,33 +254,12 @@ typedef enum {
     MOD_LAYER_LAST
 } modbits;
 
-/// @todo fix in IKC
-#define _MS_U     { MS_U, 0,    ' ' }
-#define _MS_D     { MS_D, 0,    ' ' }
-#define _MS_L     { MS_L, 0,    ' ' }
-#define _MS_R     { MS_R, 0,    ' ' }
-#define _MS_W_U     { MS_W_U, 0,    ' ' }
-#define _MS_W_D     { MS_W_D, 0,    ' ' }
-#define _MS_W_L     { MS_W_L, 0,    ' ' }
-#define _MS_W_R     { MS_W_R, 0,    ' ' }
-#define _MS_ACC0    { MS_ACC0, 0,    ' ' }
-#define _MS_ACC1    { MS_ACC1, 0,    ' ' }
-#define _MS_ACC2    { MS_ACC2, 0,    ' ' }
-#define _MS_BTN1    { MS_BTN1, 0,    ' ' }
-#define _MS_BTN2    { MS_BTN2, 0,    ' ' }
-#define _MS_BTN3    { MS_BTN3, 0,    ' ' }
-#define _MS_BTN4    { MS_BTN4, 0,    ' ' }
-#define _MS_BTN5    { MS_BTN5, 0,    ' ' }
-
 /// @todo : cleanup modifiers everywhere
-#define NONE  0
-#define CTRL  (1<<0)
-#define SHIFT (1<<1)
 #define ALTGR (1<<6)
 
 typedef enum
 {
-    // NONE  = 0,
+    NONE  = 0,
     L_CTL = (1<<0),
     L_SHF = (1<<1),
     L_ALT = (1<<2),
@@ -418,12 +397,7 @@ typedef enum
     _ik_MOD_1      ,     //{ HID_NO_KEY,     MOD_LAYER_1 , ' ' } // Neo Mod 3
     _ik_MOD_2      ,     //{ HID_NO_KEY,     MOD_LAYER_2 , ' ' } // Neo Mod 4
     _ik_MOD_3      ,     //{ HID_NO_KEY,     MOD_LAYER_3 , ' ' }
-    _ik_MOUSE      ,     //{ HID_NO_KEY,     MOD_MOUSE   , ' ' }
     _ik_COMPOSE    ,     //{ HID_NO_KEY,     MOD_COMPOSE , ' ' }
-    _ik_MS_SCROLL  ,     //{ MS_SCROLL,0,    ' ' }
-    _ik_MS_BTN_1   ,     // { MS_BTN_1, 0,    ' ' }
-    _ik_MS_BTN_2   ,     // { MS_BTN_2, 0,    ' ' }
-    _ik_MS_BTN_3   ,     // { MS_BTN_3, 0,    ' ' }
     _ik_INS        ,     //{ HID_INSERT,   0     , ' ' }  //  Insert
     _ik_DEL        ,     //{ HID_DELETE,   0     , ' ' }  //  Delete
     _ik_LEFT       ,     //{ HID_LEFT,     0     , ' ' }  //  Left
@@ -507,15 +481,32 @@ typedef enum
     _ik_Y         ,     //{ HID_Y,         L_SHF , 'Y' }
     _ik_z         ,     //{ HID_Z,         0,      'z' }
     _ik_Z         ,     //{ HID_Z,         L_SHF , 'Z' }
-    _ik_DEGREE    , // _no
+    _ik_DEGREE    ,     // _no
     _ik_TILDE     ,     //{ HID_NON_US_1,   L_SHF , '~' }
-    _ik_SSHARP    , // _no
-    _ik_a_UML     , // _no
-    _ik_A_UML     , // _no
-    _ik_O_UML     , // _no
-    _ik_o_UML     , // _no
-    _ik_U_UML     , // _no
-    _ik_u_UML     ,// _no
+    _ik_SSHARP    ,     // _no
+    _ik_a_UML     ,     // _no
+    _ik_A_UML     ,     // _no
+    _ik_O_UML     ,     // _no
+    _ik_o_UML     ,     // _no
+    _ik_U_UML     ,     // _no
+    _ik_u_UML     ,     // _no
+    // Mouse
+    _ik_MS_U       ,     //{ MS_U, 0,    ' ' }
+    _ik_MS_D       ,     //{ MS_D, 0,    ' ' }
+    _ik_MS_L       ,     //{ MS_L, 0,    ' ' }
+    _ik_MS_R       ,     //{ MS_R, 0,    ' ' }
+    _ik_MS_W_U     ,     //{ MS_W_U, 0,    ' ' }
+    _ik_MS_W_D     ,     //{ MS_W_D, 0,    ' ' }
+    _ik_MS_W_L     ,     //{ MS_W_L, 0,    ' ' }
+    _ik_MS_W_R     ,     //{ MS_W_R, 0,    ' ' }
+    _ik_MS_ACC0    ,     //{ MS_ACC0, 0,    ' ' }
+    _ik_MS_ACC1    ,     //{ MS_ACC1, 0,    ' ' }
+    _ik_MS_ACC2    ,     //{ MS_ACC2, 0,    ' ' }
+    _ik_MS_BTN1    ,     //{ MS_BTN1, 0,    ' ' }
+    _ik_MS_BTN2    ,     //{ MS_BTN2, 0,    ' ' }
+    _ik_MS_BTN3    ,     //{ MS_BTN3, 0,    ' ' }
+    _ik_MS_BTN4    ,     //{ MS_BTN4, 0,    ' ' }
+    _ik_MS_BTN5    ,     //{ MS_BTN5, 0,    ' ' }
     _ik_NUMBERoF
 } InterimsKeycode;
 

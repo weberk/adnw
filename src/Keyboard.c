@@ -180,9 +180,7 @@ int main(void)
         if (USB_DeviceState != DEVICE_STATE_Suspended) {
             HID_Device_USBTask(&Keyboard_HID_Interface);
             HID_Device_USBTask(&DBG_HID_Interface);
-            /// @todo KW: erzeugt zu viel Last auf dem Bus: verzögerte Tastendrücke ??
-            // disabled as getExtraReport() depends on new hid_usage structures not yet integrated
-            // HID_Device_USBTask(&Extra_HID_Interface);
+            HID_Device_USBTask(&Extra_HID_Interface);
             if( g_mouse_enabled )
                 HID_Device_USBTask(&Mouse_HID_Interface);
         } else if (USB_Device_RemoteWakeupEnabled ) {

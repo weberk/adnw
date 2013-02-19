@@ -4,6 +4,7 @@ MCU=$( grep "^MCU\s*=" makefile | sed "s/.*=\s*//")
 HEX=$( grep "^TARGET\s*=" makefile | sed "s/.*=\s*//")
 #MCU=atmega32u4
 #MCU=at90usb1286
+echo "*** Building for $MCU an $HEX.hex ..." &
 
 mv $HEX.hex $HEX.hex.old 2>/dev/null
 

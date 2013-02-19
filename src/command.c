@@ -87,15 +87,15 @@ void handleCommand(void) {
         handleSubCmd(k);
         return;
     }
-    // Power-Taste-gedrückt? ==> Start Bootloader
+    // Power-Taste-gedr√ºckt? ==> Start Bootloader
     hid = (k.row == 7 && k.col == 1) ? HID_B : hid;
-    // Mute-Taste-gedrückt? ==> Start Makromodus
+    // Mute-Taste-gedr√ºckt? ==> Start Makromodus
     hid = (k.row == 7 && k.col == 2) ? HID_M : hid;
-    // F1-Taste gedrückt? ==> Switch Layout
+    // F1-Taste gedr√ºckt? ==> Switch Layout
     hid = (k.row == 0 && k.col == 0) ? HID_L : hid;
-    // F2-Taste-gedrückt? ==> Switch GeoArea
+    // F2-Taste-gedr√ºckt? ==> Switch GeoArea
     hid = (k.row == 0 && k.col == 1) ? HID_G : hid;
-    // F3-Taste-gedrückt? ==> Switch Mac/PC
+    // F3-Taste-gedr√ºckt? ==> Switch Mac/PC
     hid = (k.row == 0 && k.col == 2) ? HID_H : hid;
 
     clearActiveKeys();
@@ -209,19 +209,17 @@ void handleSubCmd(struct Key k) {
             break;
         case SUB_LAYOUT:
         {
-            // das nächste Layout auf die gedrückte Spalte setzen, also 12 verschiedene Layouts verfügbar
-            /*
+            // das n√§chste Layout auf die gedr√ºckte Spalte setzen, also 12 verschiedene Layouts verf√ºgbar
+
             Layout nextLayout = k.col < LAYOUTS ? k.col : eeprom_read_byte (&alternateLayoutNr);
             eeprom_write_byte(&alternateLayoutNr, nextLayout);
             PrintConfiguration();
-            */
-            printf("\nLAYOUTS not yet implemented");
             setCommandMode(false);
             break;
         }
         case SUB_GEOAREA:
         {
-            // den geografischen Bereich auf die gedrückte Spalte setzen, DE, GB und US verfügbar
+            // den geografischen Bereich auf die gedr√ºckte Spalte setzen, DE, GB und US verf√ºgbar
             GeoArea nextAlternateGeoArea = k.col < 3 ? k.col : eeprom_read_byte (&alternateGeoArea);
             eeprom_write_byte(&alternateGeoArea, nextAlternateGeoArea);
             PrintConfiguration();
@@ -230,7 +228,7 @@ void handleSubCmd(struct Key k) {
         }
         case SUB_PC_MAC:
         {
-            // die Hardware auf die gedrückte Spalte setzen, PC/Mac verfügbar
+            // die Hardware auf die gedrÔøΩckte Spalte setzen, PC/Mac verfÔøΩgbar
             MacOrPC  nextAltMacOrPC = k.col < 2 ? k.col : eeprom_read_byte (&altMacOrPC);
             eeprom_write_byte(&altMacOrPC, nextAltMacOrPC);
             PrintConfiguration();

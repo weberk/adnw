@@ -60,9 +60,9 @@ uint8_t getKeyChar(uint8_t row, uint8_t col, uint8_t layer)
     return ch;
 }
 
-EEMEM Layout   alternateLayoutNr = QWERTZ_DE;
-EEMEM MacOrPC  altMacOrPC        = PC;
-EEMEM GeoArea  alternateGeoArea  = DE;
+EEMEM Layout   alternateLayoutNr = DEFAULTLAYOUT;
+EEMEM MacOrPC  altMacOrPC        = DEFAULTMACORPC;
+EEMEM GeoArea  alternateGeoArea  = DEFAULTGEOAREA;
 
 keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
 {
