@@ -354,15 +354,20 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
 
 void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
 
+  uint8_t currentLayoutNr = eeprom_read_byte(&alternateLayoutNr);
+
     switch( secondUse_state ) {
         case SECOND_USE_REPEAT:
         {
             if( activeKeys.keycnt==1 ) { // only one => previously determined key to repeat still pressed
-                memset(&report_data->KeyCode[0], 0, 6);
-                report_data->Modifier=0;
-                report_data->KeyCode[0] = SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col];
-                changeSecondUseState(SECOND_USE_REPEAT, SECOND_USE_REPEAT);
-                break;
+              // secondaryModifierUsageMatrix-Code ermitteln
+              memset(&report_data->KeyCode[0], 0, 6);
+              report_data->Modifier=0;
+              // and add keycode as only keycode
+              report_data->KeyCode[0] = USAGE_ID(secondaryModifierUsageMatrix[currentLayoutNr][activeKeys.keys[0].row][activeKeys.keys[0].col]);
+              //report_data->KeyCode[0] = SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col];
+              changeSecondUseState(SECOND_USE_REPEAT, SECOND_USE_REPEAT);
+              break;
             } else {  // repeated key was released
                 repeatGesture_timer = idle_count;
                 changeSecondUseState(SECOND_USE_REPEAT, SECOND_USE_OFF);
@@ -371,7 +376,8 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
         case SECOND_USE_OFF:
         {
             if( activeKeys.keycnt==1 && ! activeKeys.keys[0].normalKey &&
-                0 != SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col] &&
+                0 != USAGE_ID(secondaryModifierUsageMatrix[currentLayoutNr][activeKeys.keys[0].row][activeKeys.keys[0].col]) &&
+//                0 != SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col] &&
                 activeKeys.keys[0].row == secondUse_Prev_activeKeys.keys[0].row &&
                 activeKeys.keys[0].col == secondUse_Prev_activeKeys.keys[0].col &&
                 idle_count-repeatGesture_timer < 10 )
@@ -432,9 +438,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                 }
                 // report without the released key
                 fillReport(report_data);
-                // secondaryModifierUsageMatrix-Code ermitteln
-                uint8_t currentLayoutNr = eeprom_read_byte(&alternateLayoutNr);
-                // and add keycode as only keycode
+                // and add second use keycode as only keycode
                 report_data->KeyCode[0] = USAGE_ID(secondaryModifierUsageMatrix[currentLayoutNr][secondUse_key.row][secondUse_key.col]);;
                 //report_data->KeyCode[0] = SecondaryUsage[secondUse_key.row][secondUse_key.col];;
                 changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_PASSIVE);
